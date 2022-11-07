@@ -1,9 +1,6 @@
 /*global io*/
 import React, { useEffect, useState, useRef } from 'react';
-import { AgGridReact } from 'ag-grid-react';
-
-import 'ag-grid-community/styles/ag-grid.css';
-import 'ag-grid-community/styles/ag-theme-alpine.css';
+import './Table.css';
 
 const Table = () => {
     const [rowData, setRowData] = useState([]);
@@ -45,15 +42,32 @@ const Table = () => {
 
     const [columnDefs] = useState([
         { field: 'name' },
-        { field: 'screenshot' },
+        { field: 'screenshot' }
     ])
 
     return (
-        <div className="ag-theme-alpine" style={{ height: 400, width: 650 }}>
-            <AgGridReact
-                rowData={rowData}
-                columnDefs={columnDefs}>
-            </AgGridReact>
+        <div className='tableWrapper'>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Pull Request Title</th>
+                        <th>Screenshot</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        rowData.map((data, index) => {
+                            return (<tr key={index}>
+                                <td>{data.name}</td>
+                                <td>
+                                    <img alt="" src={data.screenshot} />
+                                </td>
+
+                            </tr>)
+                        })
+                    }
+                </tbody>
+            </table>
         </div>
     );
 };

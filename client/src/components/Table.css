@@ -1,0 +1,9 @@
+.tableWrapper {
+  display: flex;
+  justify-content: center;
+}
+
+td img {
+  margin: 10px;
+  box-shadow: 0px 6px 12px #888888;
+}
