@@ -1,49 +1,30 @@
-/*global io*/
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Table.css';
+import axios from 'axios';
+
+const HOST_URL = 'http://54.224.137.215:3000';
 
 const Table = () => {
     const [rowData, setRowData] = useState([]);
-    const socketRef = useRef();
 
     useEffect(() => {
-        const newSocket = io('http://localhost:3000');
-        socketRef.current = newSocket;
-
-        newSocket.on('all-logs', data => {
-            if (data.length) {
-                setRowData(data.map((item) => {
-                    return {
-                        name: item.name,
-                        screenshot: item.url
-                    }
-                }))
-            }
-        })
-
-        return () => {
-            newSocket.off('all-logs');
-        };
+        const url = `${HOST_URL}/api/logs`;
+        axios.get(url)
+            .then(function (response) {
+                const { data } = response;
+                if (data.length) {
+                    setRowData(data.map((item) => {
+                        return {
+                            name: item.name,
+                            screenshot: item.url
+                        }
+                    }))
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }, [])
-
-    useEffect(() => {
-        const onGetNewMessage = (data) => {
-            setRowData([...rowData, {
-                ...data,
-                screenshot: data.url,
-            }])
-        }
-        socketRef.current.on('message', onGetNewMessage)
-
-        return () => {
-            socketRef.current.off('message', onGetNewMessage);
-        };
-    }, [rowData]);
-
-    const [columnDefs] = useState([
-        { field: 'name' },
-        { field: 'screenshot' }
-    ])
 
     return (
         <div className='tableWrapper'>
